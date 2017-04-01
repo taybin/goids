@@ -12,11 +12,12 @@ type appContext struct {
 	area *Area
 }
 
+var lastID = 0
 var upgrader = websocket.Upgrader{} // use default options
 
 func main() {
 	context := &appContext{
-		area: NewArea(500, 500),
+		area: NewArea(100, 100),
 	}
 
 	setupBoids(context)
@@ -24,8 +25,11 @@ func main() {
 }
 
 func setupBoids(context *appContext) {
-	for i := 0; i < 20; i++ {
-		context.area.AddBoid()
+	for i := 0; i < 3; i++ {
+		lastID = lastID + 1
+		boid := NewBoid(lastID, len(context.area.Dimensions))
+		boid.RandomizePosition(context.area)
+		context.area.AddBoid(boid)
 	}
 
 	go func() {

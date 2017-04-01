@@ -8,7 +8,6 @@ type Area struct {
 	Tree       *rtree.Rtree
 	Dimensions []int32
 	Boids      map[int]*Boid
-	LastID     int
 	SendChan   chan *Boid
 }
 
@@ -20,17 +19,13 @@ func NewArea(dimensions ...int32) *Area {
 		Dimensions: dimensions,
 		Boids:      make(map[int]*Boid),
 		SendChan:   make(chan *Boid),
-		LastID:     0,
 	}
 	return a
 }
 
-func (a *Area) AddBoid() {
-	id := a.LastID + 1
-	boid := NewBoid(id, a.Dimensions)
-	a.Boids[id] = boid
+func (a *Area) AddBoid(boid *Boid) {
+	a.Boids[boid.ID] = boid
 	a.Tree.Insert(boid)
-	a.LastID = id
 }
 
 func (a *Area) UpdateBoids() {

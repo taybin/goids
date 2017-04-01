@@ -4,6 +4,8 @@ package main
 
 import (
 	rtree "github.com/dhconnelly/rtreego"
+	"log"
+	"math"
 	"math/rand"
 )
 
@@ -13,13 +15,12 @@ type Boid struct {
 	Velocity []float64   `json:"-"`
 }
 
-func NewBoid(id int, dimensions []int32) *Boid {
+func NewBoid(id, dimensions int) *Boid {
 	var point rtree.Point
 	var vel []float64
 
-	for i := range dimensions {
-		p := rand.Int31n(dimensions[i])
-		point = append(point, float64(p))
+	for i := 0; i < dimensions; i++ {
+		point = append(point, 0.0)
 		vel = append(vel, 0.0)
 	}
 
@@ -30,25 +31,39 @@ func NewBoid(id int, dimensions []int32) *Boid {
 	}
 }
 
+func (b *Boid) RandomizePosition(area *Area) {
+	var point rtree.Point
+
+	for i := range area.Dimensions {
+		p := rand.Int31n(area.Dimensions[i])
+		point = append(point, float64(p))
+	}
+
+	b.Point = point
+}
+
 func (b *Boid) Bounds() *rtree.Rect {
 	return b.Point.ToRect(0.01)
 }
 
 func (b *Boid) UpdateVelocity(area *Area) {
-	v1 := b.rule1(area)
-	v2 := b.rule2(area)
-	v3 := b.rule3(area)
+	v1 := b.Rule1(area)
+	log.Printf("Rule1 %d %v\n", b.ID, v1)
+	// v2 := b.rule2(area)
+	// log.Printf("rule2 %d %v\n", b.ID, v2)
+	// v3 := b.rule3(area)
 
-	b.Velocity = addFloats(v1, v2, v3)
+	// b.Velocity = AddFloats(v1, v2)
+	b.Velocity = v1
 }
 
 func (b *Boid) UpdatePosition() {
-	b.Point = addFloats(b.Point, b.Velocity)
+	b.Point = AddFloats(b.Point, b.Velocity)
 }
 
-// rule1
+// Rule1
 //
-// 	PROCEDURE rule1(boid bJ)
+// 	PROCEDURE Rule1(boid bJ)
 //
 //		Vector pcJ
 //
@@ -63,7 +78,7 @@ func (b *Boid) UpdatePosition() {
 //    RETURN (pcJ - bJ.position) / 100
 //
 // 	END PROCEDURE
-func (b *Boid) rule1(area *Area) []float64 {
+func (b *Boid) Rule1(area *Area) []float64 {
 	pcJ := make(rtree.Point, len(b.Point))
 	for i := range pcJ {
 		pcJ[i] = 0
@@ -82,52 +97,43 @@ func (b *Boid) rule1(area *Area) []float64 {
 	}
 
 	subbed := SubFloats(b.Point, pcJ)
-	divved := divFloat(subbed, 100.0)
+	divved := DivFloat(subbed, 100.0)
 	return divved
 }
 
+// PROCEDURE rule2(boid bJ)
+//
+// 	Vector c = 0;
+//
+// 	FOR EACH BOID b
+// 		IF b != bJ THEN
+// 			IF |b.position - bJ.position| < 100 THEN
+// 				c = c - (b.position - bJ.position)
+// 			END IF
+// 		END IF
+// 	END
+//
+// 	RETURN c
+//
+// END PROCEDURE
 func (b *Boid) rule2(area *Area) []float64 {
-	return make([]float64, 1)
-}
+	vector := makeFloats(int32(len(b.Point)))
 
-func (b *Boid) rule3(area *Area) []float64 {
-	return make([]float64, 1)
-}
-
-func SubFloats(a, b []float64) []float64 {
-	newPoint := make([]float64, len(a))
-	for i := range a {
-		newPoint[i] = a[i] - b[i]
-	}
-	return newPoint
-}
-
-func divFloat(a []float64, div float64) []float64 {
-	newPoint := make([]float64, len(a))
-	for i := range a {
-		newPoint[i] = a[i] / div
-	}
-	return newPoint
-}
-
-func addFloats(floats ...[]float64) []float64 {
-	newFloat := makeFloats(int32(len(floats[0])))
-
-	for i := range floats {
-		for j := range floats[i] {
-			newFloat[j] = newFloat[j] + floats[i][j]
+	for id, boid := range area.Boids {
+		if id != b.ID {
+			for k, v := range boid.Point {
+				if math.Abs(v-b.Point[k]) > 10 {
+					vector[k] = vector[k] - (v - b.Point[k])
+				}
+			}
 		}
 	}
 
-	return newFloat
+	return vector
 }
 
-func makeFloats(size int32) []float64 {
-	newFloats := make([]float64, size)
+func (b *Boid) rule3(area *Area) []float64 {
+	vector := makeFloats(int32(len(b.Point)))
 
-	for i := range newFloats {
-		newFloats[i] = 0
-	}
-
-	return newFloats
+	return vector
 }
