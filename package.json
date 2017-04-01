@@ -1,0 +1,16 @@
+{
+  "name": "boids",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Taybin Rutkin <taybin@taybin.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack"
+  },
+  "dependencies": {
+    "babylonjs": "^2.5.0"
+  },
+  "devDependencies": {
+    "webpack": "^2.3.2"
+  }
+}
