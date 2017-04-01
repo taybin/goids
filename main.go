@@ -16,7 +16,7 @@ var upgrader = websocket.Upgrader{} // use default options
 
 func main() {
 	context := &appContext{
-		area: NewArea(1000, 1000),
+		area: NewArea(500, 500),
 	}
 
 	setupBoids(context)

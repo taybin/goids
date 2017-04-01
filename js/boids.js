@@ -1,18 +1,40 @@
-import babylon from 'babylonjs';
+import BABYLON from 'babylonjs';
 
-window.addEventListener("load", function(evt) {
+window.addEventListener("DOMContentLoaded", function(evt) {
   var boids = {}
 
-  var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera( 50, window.innerWidth/window.innerHeight, 0.1, 2000 );
+  var canvas = document.getElementById('renderCanvas');
+  var engine = new BABYLON.Engine(canvas, true);
 
-  var renderer = new THREE.WebGLRenderer();
-  renderer.setSize( window.innerWidth, window.innerHeight );
-  document.body.appendChild( renderer.domElement );
+	var createScene = function() {
+			// create a basic BJS Scene object
+			var scene = new BABYLON.Scene(engine);
 
-  camera.position.z = 5;
+			// create a FreeCamera, and set its position to (x:0, y:5, z:-10)
+			var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5, -500), scene);
 
-  var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+			// target the camera to scene origin
+			camera.setTarget(BABYLON.Vector3.Zero());
+
+			// attach the camera to the canvas
+			camera.attachControl(canvas, false);
+
+			// create a basic light, aiming 0,1,0 - meaning, to the sky
+			var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0,1,0), scene);
+
+			// return the created scene
+			return scene;
+	};
+
+	var scene = createScene();
+
+	engine.runRenderLoop(function() {
+		scene.render();
+	});
+
+  window.addEventListener('resize', function() {
+    engine.resize();
+  });
 
   var ws;
   ws = new WebSocket("ws://localhost:3000/ws");
@@ -30,27 +52,15 @@ window.addEventListener("load", function(evt) {
   }
 
   ws.onmessage = function(evt) {
-    boid = JSON.parse(evt.data);
-    boids[boid.id] = boid;
+    var boid = JSON.parse(evt.data);
 
-    var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    var cube = new THREE.Mesh( geometry, material );
-    cube.position.x = boid.position[0];
-    cube.position.y = boid.position[1];
-    cube.position.z = 0;
-    scene.add( cube );
+    if (!(boid.id in boids)) {
+      var cube = BABYLON.Mesh.CreateBox(boid.id.toString(), 2, scene);
+      boid.cube = cube;
+      boids[boid.id] = boid;
+    }
+    boids[boid.id].position = boid.position;
+    boids[boid.id].cube.position.x = boid.position[0] - 250.0;
+    boids[boid.id].cube.position.y = boid.position[1] - 250.0;
   };
-
-  var render = function () {
-    requestAnimationFrame( render );
-
-    renderer.render(scene, camera);
-  };
-
-  render();
 });
-
-function initializeThree() {
-
-  return scene;
-}
