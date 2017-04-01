@@ -1,44 +1,60 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
 	"time"
 )
 
+type appContext struct {
+	area *Area
+}
+
 var upgrader = websocket.Upgrader{} // use default options
 
 func main() {
-	setupBoids()
-	setupWeb()
-}
-
-func setupWeb() {
-	fs := http.FileServer(http.Dir("static"))
-	http.Handle("/", fs)
-	http.HandleFunc("/ws", websock)
-
-	log.Println("Listening...")
-	http.ListenAndServe(":3000", nil)
-}
-
-func setupBoids() {
-	a := NewArea(1000, 1000)
-	for i := 0; i < 20; i++ {
-		a.AddBoid()
+	context := &appContext{
+		area: NewArea(1000, 1000),
 	}
-	log.Printf("%v\n", a)
+
+	setupBoids(context)
+	setupWeb(context)
+}
+
+func setupBoids(context *appContext) {
+	for i := 0; i < 20; i++ {
+		context.area.AddBoid()
+	}
 
 	go func() {
 		for {
-			a.UpdateBoids()
+			context.area.UpdateBoids()
 			time.Sleep(time.Second)
 		}
 	}()
 }
 
-func websock(w http.ResponseWriter, r *http.Request) {
+type appHandler struct {
+	*appContext
+	H func(*appContext, http.ResponseWriter, *http.Request)
+}
+
+func (ah appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	ah.H(ah.appContext, w, r)
+}
+
+func setupWeb(context *appContext) {
+	fs := http.FileServer(http.Dir("static"))
+	http.Handle("/", fs)
+	http.Handle("/ws", appHandler{context, websockHandler})
+
+	log.Println("Listening...")
+	http.ListenAndServe(":3000", nil)
+}
+
+func websockHandler(context *appContext, w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print("upgrade:", err)
@@ -46,16 +62,18 @@ func websock(w http.ResponseWriter, r *http.Request) {
 	}
 	defer c.Close()
 	for {
-		mt, message, err := c.ReadMessage()
-		if err != nil {
-			log.Println("read:", err)
-			break
-		}
-		log.Printf("recv: %s", message)
-		err = c.WriteMessage(mt, message)
-		if err != nil {
-			log.Println("write:", err)
-			break
+		select {
+		case boid := <-context.area.SendChan:
+			jBoid, err := json.Marshal(boid)
+			if err != nil {
+				log.Println("error encoding boid:", err)
+				break
+			}
+			err = c.WriteMessage(websocket.TextMessage, jBoid)
+			if err != nil {
+				log.Println("write:", err)
+				break
+			}
 		}
 	}
 }

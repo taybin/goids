@@ -2,7 +2,6 @@ package main
 
 import (
 	rtree "github.com/dhconnelly/rtreego"
-	"log"
 )
 
 type Area struct {
@@ -10,6 +9,7 @@ type Area struct {
 	Dimensions []int32
 	Boids      map[int]*Boid
 	LastID     int
+	SendChan   chan *Boid
 }
 
 func NewArea(dimensions ...int32) *Area {
@@ -19,6 +19,7 @@ func NewArea(dimensions ...int32) *Area {
 		Tree:       rtree.NewTree(n_dimensions, 25, 50),
 		Dimensions: dimensions,
 		Boids:      make(map[int]*Boid),
+		SendChan:   make(chan *Boid),
 		LastID:     0,
 	}
 	return a
@@ -38,6 +39,6 @@ func (a *Area) UpdateBoids() {
 	}
 	for _, boid := range a.Boids {
 		boid.UpdatePosition()
-		log.Printf("%#v\n", boid)
+		a.SendChan <- boid
 	}
 }

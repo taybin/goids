@@ -8,9 +8,9 @@ import (
 )
 
 type Boid struct {
-	ID       int
-	Point    rtree.Point
-	Velocity []float64
+	ID       int         `json:"id"`
+	Point    rtree.Point `json:"position"`
+	Velocity []float64   `json:"-"`
 }
 
 func NewBoid(id int, dimensions []int32) *Boid {
