@@ -67,12 +67,12 @@ func websockHandler(context *appContext, w http.ResponseWriter, r *http.Request)
 			jBoid, err := json.Marshal(boid)
 			if err != nil {
 				log.Println("error encoding boid:", err)
-				break
+				return
 			}
 			err = c.WriteMessage(websocket.TextMessage, jBoid)
 			if err != nil {
 				log.Println("write:", err)
-				break
+				return
 			}
 		}
 	}
