@@ -58,9 +58,25 @@ window.addEventListener("DOMContentLoaded", function(evt) {
       var cube = BABYLON.Mesh.CreateBox(boid.id.toString(), 2, scene);
       boid.cube = cube;
       boids[boid.id] = boid;
+      boids[boid.id].cube.position =
+        new BABYLON.Vector3(
+          boid.position[0] - 250.0,
+          boid.position[1] - 250.0,
+          0);
+    } else {
+      BABYLON.Animation.CreateAndStartAnimation(
+        'animation-'+boid.id+'x',
+        boids[boid.id].cube,
+        'position',
+        30,
+        120,
+        boids[boid.id].cube.position,
+        new BABYLON.Vector3(
+          boid.position[0] - 250.0,
+          boid.position[1] - 250.0,
+          0),
+        0
+      );
     }
-    boids[boid.id].position = boid.position;
-    boids[boid.id].cube.position.x = boid.position[0] - 250.0;
-    boids[boid.id].cube.position.y = boid.position[1] - 250.0;
   };
 });
