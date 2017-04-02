@@ -4,7 +4,7 @@ package main
 
 import (
 	rtree "github.com/dhconnelly/rtreego"
-	"log"
+	// "log"
 	"math"
 	"math/rand"
 )
@@ -48,12 +48,10 @@ func (b *Boid) Bounds() *rtree.Rect {
 
 func (b *Boid) UpdateVelocity(area *Area) {
 	v1 := b.Rule1(area)
-	log.Printf("Rule1 %d %v\n", b.ID, v1)
 	v2 := b.Rule2(area)
-	// log.Printf("Rule2 %d %v\n", b.ID, v2)
-	// v3 := b.Rule3(area)
+	v3 := b.Rule3(area)
 
-	b.Velocity = AddFloats(v1, v2)
+	b.Velocity = AddFloats(v1, v2, v3)
 }
 
 func (b *Boid) UpdatePosition() {
@@ -100,6 +98,8 @@ func (b *Boid) Rule1(area *Area) []float64 {
 	return divved
 }
 
+// Rule2
+//
 // PROCEDURE rule2(boid bJ)
 //
 // 	Vector c = 0;
@@ -131,8 +131,39 @@ func (b *Boid) Rule2(area *Area) []float64 {
 	return vector
 }
 
+// Rule3
+//
+// PROCEDURE rule3(boid bJ)
+//
+// 	Vector pvJ
+//
+// 	FOR EACH BOID b
+// 		IF b != bJ THEN
+// 			pvJ = pvJ + b.velocity
+// 		END IF
+// 	END
+//
+// 	pvJ = pvJ / N-1
+//
+// 	RETURN (pvJ - bJ.velocity) / 8
+//
+// END PROCEDURE
 func (b *Boid) Rule3(area *Area) []float64 {
-	vector := makeFloats(int32(len(b.Point)))
+	pvJ := makeFloats(int32(len(b.Velocity)))
 
-	return vector
+	for id, boid := range area.Boids {
+		if id != b.ID {
+			for k, v := range boid.Velocity {
+				pvJ[k] = pvJ[k] + v
+			}
+		}
+	}
+
+	for i := range pvJ {
+		pvJ[i] = pvJ[i] / float64(len(area.Boids)-1)
+	}
+
+	subbed := SubFloats(pvJ, b.Velocity)
+	divved := DivFloat(subbed, 8.0)
+	return divved
 }
