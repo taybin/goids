@@ -25,7 +25,7 @@ func main() {
 }
 
 func setupBoids(context *appContext) {
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 20; i++ {
 		lastID = lastID + 1
 		boid := NewBoid(lastID, len(context.area.Dimensions))
 		boid.RandomizePosition(context.area)
