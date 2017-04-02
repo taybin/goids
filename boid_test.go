@@ -3,7 +3,6 @@ package main
 import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"log"
 )
 
 var _ = Describe("Boids", func() {
@@ -50,7 +49,6 @@ var _ = Describe("Boids", func() {
 
 			It("Should implement rule2", func() {
 				result := boid1.Rule2(area)
-				log.Println(result)
 				Expect(result).To(ConsistOf([]float64{0.0}))
 			})
 		})
@@ -67,6 +65,11 @@ var _ = Describe("Boids", func() {
 			It("Should implement rule1", func() {
 				result := boid1.Rule1(area)
 				Expect(result).To(ConsistOf([]float64{0.5, -0.25}))
+			})
+
+			It("Should implement rule2", func() {
+				result := boid1.Rule2(area)
+				Expect(result).To(ConsistOf([]float64{0.0, 0.0}))
 			})
 		})
 	})

@@ -62,10 +62,16 @@ window.addEventListener("DOMContentLoaded", function(evt) {
         new BABYLON.Vector3(
           boid.position[0] - 250.0,
           boid.position[1] - 250.0,
-          0);
+          boid.position[2] - 250.0);
+      boids[boid.id].cube.material = new BABYLON.StandardMaterial("material01", scene);
+      boids[boid.id].cube.material.diffuseColor =
+        new BABYLON.Color3(
+          (boid.position[3] + 1) / 100,
+          (boid.position[4] + 1) / 100,
+          (boid.position[5] + 1) / 100);
     } else {
       BABYLON.Animation.CreateAndStartAnimation(
-        'animation-'+boid.id+'x',
+        'animation-'+boid.id+'-position',
         boids[boid.id].cube,
         'position',
         30,
@@ -74,9 +80,16 @@ window.addEventListener("DOMContentLoaded", function(evt) {
         new BABYLON.Vector3(
           boid.position[0] - 250.0,
           boid.position[1] - 250.0,
-          0),
-        0
+          boid.position[2] - 250.0),
+        0,
+        null
       );
+
+      boids[boid.id].cube.material.diffuseColor =
+        new BABYLON.Color3(
+          (boid.position[3] + 1) / 100,
+          (boid.position[4] + 1) / 100,
+          (boid.position[5] + 1) / 100);
     }
   };
 });
