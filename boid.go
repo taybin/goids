@@ -49,12 +49,11 @@ func (b *Boid) Bounds() *rtree.Rect {
 func (b *Boid) UpdateVelocity(area *Area) {
 	v1 := b.Rule1(area)
 	log.Printf("Rule1 %d %v\n", b.ID, v1)
-	// v2 := b.rule2(area)
-	// log.Printf("rule2 %d %v\n", b.ID, v2)
-	// v3 := b.rule3(area)
+	v2 := b.Rule2(area)
+	// log.Printf("Rule2 %d %v\n", b.ID, v2)
+	// v3 := b.Rule3(area)
 
-	// b.Velocity = AddFloats(v1, v2)
-	b.Velocity = v1
+	b.Velocity = AddFloats(v1, v2)
 }
 
 func (b *Boid) UpdatePosition() {
@@ -96,7 +95,7 @@ func (b *Boid) Rule1(area *Area) []float64 {
 		pcJ[i] = pcJ[i] / float64(len(area.Boids)-1)
 	}
 
-	subbed := SubFloats(b.Point, pcJ)
+	subbed := SubFloats(pcJ, b.Point)
 	divved := DivFloat(subbed, 100.0)
 	return divved
 }
@@ -116,13 +115,13 @@ func (b *Boid) Rule1(area *Area) []float64 {
 // 	RETURN c
 //
 // END PROCEDURE
-func (b *Boid) rule2(area *Area) []float64 {
+func (b *Boid) Rule2(area *Area) []float64 {
 	vector := makeFloats(int32(len(b.Point)))
 
 	for id, boid := range area.Boids {
 		if id != b.ID {
 			for k, v := range boid.Point {
-				if math.Abs(v-b.Point[k]) > 10 {
+				if math.Abs(v-b.Point[k]) < 10 {
 					vector[k] = vector[k] - (v - b.Point[k])
 				}
 			}
@@ -132,7 +131,7 @@ func (b *Boid) rule2(area *Area) []float64 {
 	return vector
 }
 
-func (b *Boid) rule3(area *Area) []float64 {
+func (b *Boid) Rule3(area *Area) []float64 {
 	vector := makeFloats(int32(len(b.Point)))
 
 	return vector

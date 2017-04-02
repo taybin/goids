@@ -24,26 +24,50 @@ var _ = Describe("Boids", func() {
 			Expect(boid.Velocity).To(ConsistOf([]float64{0.0, 0.0, 0.0}))
 		})
 	})
-	Describe("Single Dimension Tests", func() {
+	Describe("Rule tests", func() {
 		var (
 			area  *Area
 			boid1 *Boid
 			boid2 *Boid
 		)
-		BeforeEach(func() {
-			area = NewArea(100)
-			boid1 = NewBoid(1, 1)
-			boid1.Point = []float64{25.0}
-			boid2 = NewBoid(2, 1)
-			boid2.Point = []float64{75.0}
+		JustBeforeEach(func() {
 			area.AddBoid(boid1)
 			area.AddBoid(boid2)
 		})
+		Context("Single Dimension Tests", func() {
+			BeforeEach(func() {
+				area = NewArea(100)
+				boid1 = NewBoid(1, 1)
+				boid1.Point = []float64{25.0}
+				boid2 = NewBoid(2, 1)
+				boid2.Point = []float64{75.0}
+			})
 
-		It("Should implement rule1", func() {
-			result := boid1.Rule1(area)
-			log.Println(result)
-			// Expect(result)
+			It("Should implement rule1", func() {
+				result := boid1.Rule1(area)
+				Expect(result).To(ConsistOf([]float64{0.5}))
+			})
+
+			It("Should implement rule2", func() {
+				result := boid1.Rule2(area)
+				log.Println(result)
+				Expect(result).To(ConsistOf([]float64{0.0}))
+			})
+		})
+
+		Context("Two Dimension Tests", func() {
+			BeforeEach(func() {
+				area = NewArea(100, 100)
+				boid1 = NewBoid(1, 2)
+				boid1.Point = []float64{25.0, 50.0}
+				boid2 = NewBoid(2, 2)
+				boid2.Point = []float64{75.0, 25.0}
+			})
+
+			It("Should implement rule1", func() {
+				result := boid1.Rule1(area)
+				Expect(result).To(ConsistOf([]float64{0.5, -0.25}))
+			})
 		})
 	})
 })
