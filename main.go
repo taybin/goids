@@ -35,7 +35,7 @@ func setupBoids(context *appContext) {
 	go func() {
 		for {
 			context.area.UpdateBoids()
-			time.Sleep(time.Millisecond * 250)
+			time.Sleep(time.Second * 4)
 		}
 	}()
 }
