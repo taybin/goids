@@ -31,8 +31,6 @@ func (a *Area) AddBoid(boid *Boid) {
 func (a *Area) UpdateBoids() {
 	for _, boid := range a.Boids {
 		boid.UpdateVelocity(a)
-	}
-	for _, boid := range a.Boids {
 		boid.UpdatePosition()
 		a.SendChan <- boid
 	}
