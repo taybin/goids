@@ -50,7 +50,8 @@ func (b *Boid) UpdateVelocity(area *Area) {
 	v2 := b.Rule2(area)
 	v3 := b.Rule3(area)
 
-	b.Velocity = AddFloats(b.Velocity, v1, v2, v3)
+	velocities := AddFloats(b.Velocity, v1, v2, v3)
+	b.Velocity = LimitVelocity(velocities)
 }
 
 func (b *Boid) UpdatePosition() {
@@ -174,6 +175,30 @@ func (b *Boid) Rule3(area *Area) []float64 {
 	subbed := SubFloats(pvJ, b.Velocity)
 	divved := DivFloat(subbed, 8.0)
 	return divved
+}
+
+// LimitVelocity
+//
+//  PROCEDURE limit_velocity(Boid b)
+//          Integer vlim
+//          Vector v
+//
+//          IF |b.velocity| > vlim THEN
+//                  b.velocity = (b.velocity / |b.velocity|) * vlim
+//          END IF
+//  END PROCEDURE
+func LimitVelocity(velocities []float64) []float64 {
+	vlim := 25.0
+	var absVel float64
+
+	for i := range velocities {
+		absVel = math.Abs(velocities[i])
+		if absVel > vlim {
+			velocities[i] = (velocities[i] / absVel) * vlim
+		}
+	}
+
+	return velocities
 }
 
 func SpatialsToBoids(spatials []rtree.Spatial) []*Boid {
