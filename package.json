@@ -5,7 +5,8 @@
   "author": "Taybin Rutkin <taybin@taybin.com>",
   "license": "MIT",
   "scripts": {
-    "build": "webpack --watch"
+    "build": "webpack",
+    "buildw": "webpack --watch"
   },
   "dependencies": {
     "babylonjs": "^2.5.0"

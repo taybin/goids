@@ -10,6 +10,7 @@ Install
 -------
 ```
 yarn install
+yarn build
 go get -d
 go build
 ```
@@ -20,11 +21,11 @@ Run
 ./goids
 ```
 
-Then open `http://localhost:4000`
+Then open `http://localhost:3000`
 
 Dev/Test
 ----
-`yarn run buildw` will watch for changes to the javascript files and rebuild
+`yarn buildw` will watch for changes to the javascript files and rebuild
 `static/bundle.js` as appropriately.
 
 `go test` or `ginkgo` will run the golang unittests
