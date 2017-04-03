@@ -4,7 +4,7 @@ goids
 [![Coverage Status](https://coveralls.io/repos/github/taybin/goids/badge.svg?branch=master)](https://coveralls.io/github/taybin/goids?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/taybin/goids)](https://goreportcard.com/report/github.com/taybin/goids)
 
-Boids in golang and javascript
+Boids in golang and javascript.
 
 Install
 -------
@@ -24,8 +24,12 @@ Run
 Then open `http://localhost:3000`
 
 Dev/Test
-----
+--------
 `yarn buildw` will watch for changes to the javascript files and rebuild
 `static/bundle.js` as appropriately.
 
 `go test` or `ginkgo` will run the golang unittests
+
+Thank You
+---------
+* [Conrad Parker](http://www.kfish.org/boids/pseudocode.html) for the pseudocode this is based off of
