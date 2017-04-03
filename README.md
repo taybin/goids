@@ -8,6 +8,23 @@ Boids in golang and javascript
 
 Install
 -------
+```
+yarn install
+go get -d
+go build
+```
 
 Run
 ---
+```
+./goids
+```
+
+Then open `http://localhost:4000`
+
+Dev/Test
+----
+`yarn run buildw` will watch for changes to the javascript files and rebuild
+`static/bundle.js` as appropriately.
+
+`go test` or `ginkgo` will run the golang unittests
