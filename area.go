@@ -33,5 +33,7 @@ func (a *Area) UpdateBoids() {
 		boid.UpdateVelocity(a)
 		boid.UpdatePosition()
 		a.SendChan <- boid
+		a.Tree.Delete(boid)
+		a.Tree.Insert(boid)
 	}
 }

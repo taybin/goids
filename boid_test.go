@@ -37,14 +37,14 @@ var _ = Describe("Boids", func() {
 			BeforeEach(func() {
 				area = NewArea(100)
 				boid1 = NewBoid(1, 1)
-				boid1.Point = []float64{25.0}
+				boid1.Point = []float64{45.0}
 				boid2 = NewBoid(2, 1)
-				boid2.Point = []float64{75.0}
+				boid2.Point = []float64{55.0}
 			})
 
 			It("Should implement rule1", func() {
 				result := boid1.Rule1(area)
-				Expect(result).To(ConsistOf([]float64{0.5}))
+				Expect(result).To(ConsistOf([]float64{0.1}))
 			})
 
 			It("Should implement rule2", func() {

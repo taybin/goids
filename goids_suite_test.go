@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestBoids(t *testing.T) {
+func TestGoids(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Boids Suite")
+	RunSpecs(t, "Goids Suite")
 }

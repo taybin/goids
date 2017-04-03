@@ -4,7 +4,6 @@ package main
 
 import (
 	rtree "github.com/dhconnelly/rtreego"
-	// "log"
 	"math"
 	"math/rand"
 )
@@ -81,8 +80,11 @@ func (b *Boid) Rule1(area *Area) []float64 {
 		pcJ[i] = 0
 	}
 
-	for id, boid := range area.Boids {
-		if id != b.ID {
+	nearest := area.Tree.NearestNeighbors(10, b.Point)
+	boids := SpatialsToBoids(nearest)
+
+	for _, boid := range boids {
+		if boid.ID != b.ID {
 			for k, v := range boid.Point {
 				pcJ[k] = pcJ[k] + v
 			}
@@ -90,7 +92,7 @@ func (b *Boid) Rule1(area *Area) []float64 {
 	}
 
 	for i := range pcJ {
-		pcJ[i] = pcJ[i] / float64(len(area.Boids)-1)
+		pcJ[i] = pcJ[i] / float64(len(boids)-1)
 	}
 
 	subbed := SubFloats(pcJ, b.Point)
@@ -118,8 +120,11 @@ func (b *Boid) Rule1(area *Area) []float64 {
 func (b *Boid) Rule2(area *Area) []float64 {
 	vector := makeFloats(int32(len(b.Point)))
 
-	for id, boid := range area.Boids {
-		if id != b.ID {
+	nearest := area.Tree.NearestNeighbors(10, b.Point)
+	boids := SpatialsToBoids(nearest)
+
+	for _, boid := range boids {
+		if boid.ID != b.ID {
 			for k, v := range boid.Point {
 				if math.Abs(v-b.Point[k]) < 10 {
 					vector[k] = vector[k] - (v - b.Point[k])
@@ -151,8 +156,11 @@ func (b *Boid) Rule2(area *Area) []float64 {
 func (b *Boid) Rule3(area *Area) []float64 {
 	pvJ := makeFloats(int32(len(b.Velocity)))
 
-	for id, boid := range area.Boids {
-		if id != b.ID {
+	nearest := area.Tree.NearestNeighbors(10, b.Point)
+	boids := SpatialsToBoids(nearest)
+
+	for _, boid := range boids {
+		if boid.ID != b.ID {
 			for k, v := range boid.Velocity {
 				pvJ[k] = pvJ[k] + v
 			}
@@ -160,10 +168,18 @@ func (b *Boid) Rule3(area *Area) []float64 {
 	}
 
 	for i := range pvJ {
-		pvJ[i] = pvJ[i] / float64(len(area.Boids)-1)
+		pvJ[i] = pvJ[i] / float64(len(boids)-1)
 	}
 
 	subbed := SubFloats(pvJ, b.Velocity)
 	divved := DivFloat(subbed, 8.0)
 	return divved
+}
+
+func SpatialsToBoids(spatials []rtree.Spatial) []*Boid {
+	boids := make([]*Boid, len(spatials))
+	for i, spatial := range spatials {
+		boids[i] = spatial.(*Boid)
+	}
+	return boids
 }
