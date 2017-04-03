@@ -50,7 +50,7 @@ func (b *Boid) UpdateVelocity(area *Area) {
 	v2 := b.Rule2(area)
 	v3 := b.Rule3(area)
 
-	b.Velocity = AddFloats(v1, v2, v3)
+	b.Velocity = AddFloats(b.Velocity, v1, v2, v3)
 }
 
 func (b *Boid) UpdatePosition() {
