@@ -1,22 +1,20 @@
 package main
 
 import (
-	rtree "github.com/dhconnelly/rtreego"
+	rtree "github.com/patrick-higgins/rtreego"
 )
 
 type Area struct {
 	Tree       *rtree.Rtree
-	Dimensions []int32
+	Dimensions rtree.Point
 	Boids      map[int]*Boid
 	SendChan   chan *Boid
 }
 
-func NewArea(dimensions ...int32) *Area {
-	n_dimensions := len(dimensions)
-
+func NewArea(dimensions ...float64) *Area {
 	a := &Area{
-		Tree:       rtree.NewTree(n_dimensions, 25, 50),
-		Dimensions: dimensions,
+		Tree:       rtree.NewTree(25, 50),
+		Dimensions: rtree.Point{300.0, 300.0, 300.0},
 		Boids:      make(map[int]*Boid),
 		SendChan:   make(chan *Boid),
 	}

@@ -3,7 +3,7 @@
 package main
 
 import (
-	rtree "github.com/dhconnelly/rtreego"
+	rtree "github.com/patrick-higgins/rtreego"
 	"math"
 	"math/rand"
 )
@@ -11,34 +11,21 @@ import (
 type Boid struct {
 	ID       int         `json:"id"`
 	Point    rtree.Point `json:"position"`
-	Velocity []float64   `json:"-"`
+	Velocity rtree.Point `json:"-"`
 }
 
-func NewBoid(id, dimensions int) *Boid {
-	var point rtree.Point
-	var vel []float64
-
-	for i := 0; i < dimensions; i++ {
-		point = append(point, 0.0)
-		vel = append(vel, 0.0)
-	}
-
+func NewBoid(id int) *Boid {
 	return &Boid{
 		ID:       id,
-		Point:    point,
-		Velocity: vel,
+		Point:    rtree.Point{0.0, 0.0, 0.0},
+		Velocity: rtree.Point{0.0, 0.0, 0.0},
 	}
 }
 
 func (b *Boid) RandomizePosition(area *Area) {
-	var point rtree.Point
-
-	for i := range area.Dimensions {
-		p := rand.Int31n(area.Dimensions[i])
-		point = append(point, float64(p))
+	for i := 0; i < 3; i++ {
+		b.Point[i] = rand.Float64() * area.Dimensions[i]
 	}
-
-	b.Point = point
 }
 
 func (b *Boid) Bounds() *rtree.Rect {
@@ -50,12 +37,12 @@ func (b *Boid) UpdateVelocity(area *Area) {
 	v2 := b.Rule2(area)
 	v3 := b.Rule3(area)
 
-	velocities := AddFloats(b.Velocity, v1, v2, v3)
+	velocities := AddPoints(b.Velocity, v1, v2, v3)
 	b.Velocity = LimitVelocity(velocities)
 }
 
 func (b *Boid) UpdatePosition() {
-	b.Point = AddFloats(b.Point, b.Velocity)
+	b.Point = AddPoints(b.Point, b.Velocity)
 }
 
 // Rule1
@@ -75,29 +62,26 @@ func (b *Boid) UpdatePosition() {
 //    RETURN (pcJ - bJ.position) / 100
 //
 // 	END PROCEDURE
-func (b *Boid) Rule1(area *Area) []float64 {
-	pcJ := make(rtree.Point, len(b.Point))
-	for i := range pcJ {
-		pcJ[i] = 0
-	}
+func (b *Boid) Rule1(area *Area) rtree.Point {
+	pcJ := rtree.Point{0.0, 0.0, 0.0}
 
-	nearest := area.Tree.NearestNeighbors(10, b.Point)
+	nearest := area.Tree.NearestNeighbors(5, b.Point)
 	boids := SpatialsToBoids(nearest)
 
 	for _, boid := range boids {
 		if boid.ID != b.ID {
-			for k, v := range boid.Point {
-				pcJ[k] = pcJ[k] + v
+			for i := 0; i < 3; i++ {
+				pcJ[i] = pcJ[i] + boid.Point[i]
 			}
 		}
 	}
 
-	for i := range pcJ {
+	for i := 0; i < 3; i++ {
 		pcJ[i] = pcJ[i] / float64(len(boids)-1)
 	}
 
-	subbed := SubFloats(pcJ, b.Point)
-	divved := DivFloat(subbed, 100.0)
+	subbed := SubPoints(pcJ, b.Point)
+	divved := DivPoint(subbed, 100.0)
 	return divved
 }
 
@@ -118,17 +102,17 @@ func (b *Boid) Rule1(area *Area) []float64 {
 // 	RETURN c
 //
 // END PROCEDURE
-func (b *Boid) Rule2(area *Area) []float64 {
-	vector := makeFloats(int32(len(b.Point)))
+func (b *Boid) Rule2(area *Area) rtree.Point {
+	vector := rtree.Point{0.0, 0.0, 0.0}
 
-	nearest := area.Tree.NearestNeighbors(10, b.Point)
+	nearest := area.Tree.NearestNeighbors(5, b.Point)
 	boids := SpatialsToBoids(nearest)
 
 	for _, boid := range boids {
 		if boid.ID != b.ID {
-			for k, v := range boid.Point {
-				if math.Abs(v-b.Point[k]) < 10 {
-					vector[k] = vector[k] - (v - b.Point[k])
+			for i := 0; i < 3; i++ {
+				if math.Abs(boid.Point[i]-b.Point[i]) < 10 {
+					vector[i] = vector[i] - (boid.Point[i] - b.Point[i])
 				}
 			}
 		}
@@ -154,26 +138,26 @@ func (b *Boid) Rule2(area *Area) []float64 {
 // 	RETURN (pvJ - bJ.velocity) / 8
 //
 // END PROCEDURE
-func (b *Boid) Rule3(area *Area) []float64 {
-	pvJ := makeFloats(int32(len(b.Velocity)))
+func (b *Boid) Rule3(area *Area) rtree.Point {
+	pvJ := rtree.Point{0.0, 0.0, 0.0}
 
-	nearest := area.Tree.NearestNeighbors(10, b.Point)
+	nearest := area.Tree.NearestNeighbors(5, b.Point)
 	boids := SpatialsToBoids(nearest)
 
 	for _, boid := range boids {
 		if boid.ID != b.ID {
-			for k, v := range boid.Velocity {
-				pvJ[k] = pvJ[k] + v
+			for i := 0; i < 3; i++ {
+				pvJ[i] = pvJ[i] + boid.Velocity[i]
 			}
 		}
 	}
 
-	for i := range pvJ {
+	for i := 0; i < 3; i++ {
 		pvJ[i] = pvJ[i] / float64(len(boids)-1)
 	}
 
-	subbed := SubFloats(pvJ, b.Velocity)
-	divved := DivFloat(subbed, 8.0)
+	subbed := SubPoints(pvJ, b.Velocity)
+	divved := DivPoint(subbed, 8.0)
 	return divved
 }
 
@@ -187,11 +171,11 @@ func (b *Boid) Rule3(area *Area) []float64 {
 //                  b.velocity = (b.velocity / |b.velocity|) * vlim
 //          END IF
 //  END PROCEDURE
-func LimitVelocity(velocities []float64) []float64 {
+func LimitVelocity(velocities rtree.Point) rtree.Point {
 	vlim := 25.0
 	var absVel float64
 
-	for i := range velocities {
+	for i := 0; i < 3; i++ {
 		absVel = math.Abs(velocities[i])
 		if absVel > vlim {
 			velocities[i] = (velocities[i] / absVel) * vlim
@@ -202,9 +186,12 @@ func LimitVelocity(velocities []float64) []float64 {
 }
 
 func SpatialsToBoids(spatials []rtree.Spatial) []*Boid {
-	boids := make([]*Boid, len(spatials))
-	for i, spatial := range spatials {
-		boids[i] = spatial.(*Boid)
+	var boids []*Boid
+
+	for _, spatial := range spatials {
+		if spatial != nil {
+			boids = append(boids, spatial.(*Boid))
+		}
 	}
 	return boids
 }

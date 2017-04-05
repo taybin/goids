@@ -18,7 +18,7 @@ func main() {
 	kingpin.CommandLine.Help = "An implementation of boids"
 	kingpin.Parse()
 	context := &appContext{
-		area: NewArea(300, 300, 300, 98, 98, 98),
+		area: NewArea(300, 300, 300),
 	}
 
 	setupBoids(context)
@@ -30,7 +30,7 @@ func setupBoids(context *appContext) {
 
 	for i := 0; i < int(*count); i++ {
 		lastID = lastID + 1
-		boid := NewBoid(lastID, len(context.area.Dimensions))
+		boid := NewBoid(lastID)
 		boid.RandomizePosition(context.area)
 		context.area.AddBoid(boid)
 	}
