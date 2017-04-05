@@ -1,7 +1,12 @@
 package main
 
 import (
+	"gopkg.in/alecthomas/kingpin.v2"
 	"time"
+)
+
+var (
+	count = kingpin.Flag("count", "Number of boids").Short('c').Default("500").Uint()
 )
 
 type appContext struct {
@@ -9,6 +14,9 @@ type appContext struct {
 }
 
 func main() {
+	kingpin.Version("0.7").Author("Taybin Rutkin")
+	kingpin.CommandLine.Help = "An implementation of boids"
+	kingpin.Parse()
 	context := &appContext{
 		area: NewArea(300, 300, 300, 98, 98, 98),
 	}
@@ -20,7 +28,7 @@ func main() {
 func setupBoids(context *appContext) {
 	var lastID = 0
 
-	for i := 0; i < 500; i++ {
+	for i := 0; i < int(*count); i++ {
 		lastID = lastID + 1
 		boid := NewBoid(lastID, len(context.area.Dimensions))
 		boid.RandomizePosition(context.area)
