@@ -32,4 +32,6 @@ Dev/Test
 
 Thank You
 ---------
-* [Conrad Parker](http://www.kfish.org/boids/pseudocode.html) for the pseudocode this is based off of
+* [Craig Reynolds](http://www.red3d.com/cwr/boids/)
+* [Jack Perkins](https://github.com/jackaperkins/boids)
+* [Conrad Parker](http://www.kfish.org/boids/pseudocode.html)
