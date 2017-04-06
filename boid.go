@@ -5,7 +5,6 @@ package main
 import (
 	rtree "github.com/patrick-higgins/rtreego"
 	"math"
-	"math/rand"
 )
 
 type Boid struct {
@@ -23,9 +22,9 @@ func NewBoid(id int) *Boid {
 }
 
 func (b *Boid) RandomizePosition(area *Area) {
-	b.Point[0] = rand.Float64() * area.X.Stop
-	b.Point[1] = rand.Float64() * area.Y.Stop
-	b.Point[2] = rand.Float64() * area.Z.Stop
+	b.Point[0] = area.X.Rand()
+	b.Point[1] = area.Y.Rand()
+	b.Point[2] = area.Z.Rand()
 }
 
 func (b *Boid) Bounds() *rtree.Rect {

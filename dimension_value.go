@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"gopkg.in/alecthomas/kingpin.v2"
+	"math/rand"
 	"strconv"
 	"strings"
 )
@@ -51,4 +52,10 @@ func (dv *DimensionValue) Set(value string) error {
 
 func (dv *DimensionValue) String() string {
 	return ""
+}
+
+// Rand() returns a bounded value between or equal to the Start (inclusive)
+// and Stop (exclusive) values.  It returns [Start,Stop)
+func (dv *DimensionValue) Rand() float64 {
+	return ((dv.Stop - dv.Start) * rand.Float64()) + dv.Start
 }
