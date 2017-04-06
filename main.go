@@ -21,9 +21,9 @@ func main() {
 	kingpin.Version("0.7").Author("Taybin Rutkin")
 	kingpin.CommandLine.Help = "An implementation of boids"
 	kingpin.Parse()
-	log.Printf("x-dimension %d - %d\n", xD.Start, xD.Stop)
-	log.Printf("y-dimension %d - %d\n", yD.Start, yD.Stop)
-	log.Printf("z-dimension %d - %d\n", zD.Start, zD.Stop)
+	log.Printf("x-dimension %f - %f\n", xD.Start, xD.Stop)
+	log.Printf("y-dimension %f - %f\n", yD.Start, yD.Stop)
+	log.Printf("z-dimension %f - %f\n", zD.Start, zD.Stop)
 
 	context := &appContext{
 		area: NewArea(xD, yD, zD),

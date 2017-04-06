@@ -8,12 +8,14 @@ import (
 	"strings"
 )
 
+// Dimension converts from kingpin.Settings to a *DimensionValue
 func Dimension(s kingpin.Settings) *DimensionValue {
 	value := &DimensionValue{}
 	s.SetValue(value)
 	return value
 }
 
+// DimensionValue holds Start and Stop values for a given dimension
 type DimensionValue struct {
 	Start float64
 	Stop  float64
@@ -26,6 +28,7 @@ func NewDimensionValue(start, stop float64) *DimensionValue {
 	}
 }
 
+// Set parses a string in START:STOP format into a given *DimensionValue
 func (dv *DimensionValue) Set(value string) error {
 	parts := strings.SplitN(value, ":", 2)
 	if len(parts) != 2 {
@@ -54,7 +57,7 @@ func (dv *DimensionValue) String() string {
 	return ""
 }
 
-// Rand() returns a bounded value between or equal to the Start (inclusive)
+// Rand returns a bounded value between or equal to the Start (inclusive)
 // and Stop (exclusive) values.  It returns [Start,Stop)
 func (dv *DimensionValue) Rand() float64 {
 	return ((dv.Stop - dv.Start) * rand.Float64()) + dv.Start
