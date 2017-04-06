@@ -37,7 +37,10 @@ var _ = Describe("Boids", func() {
 		})
 		Context("Single Dimension Tests", func() {
 			BeforeEach(func() {
-				area = NewArea(100)
+				xD := NewDimensionValue(0.0, 100.0)
+				yD := NewDimensionValue(0.0, 0.0)
+				zD := NewDimensionValue(0.0, 0.0)
+				area = NewArea(xD, yD, zD)
 				boid1 = NewBoid(1)
 				boid1.Point = rtree.Point{45.0, 0.0, 0.0}
 				boid2 = NewBoid(2)
@@ -57,7 +60,10 @@ var _ = Describe("Boids", func() {
 
 		Context("Two Dimension Tests", func() {
 			BeforeEach(func() {
-				area = NewArea(100, 100)
+				xD := NewDimensionValue(0.0, 100.0)
+				yD := NewDimensionValue(0.0, 100.0)
+				zD := NewDimensionValue(0.0, 0.0)
+				area = NewArea(xD, yD, zD)
 				boid1 = NewBoid(1)
 				boid1.Point = rtree.Point{25.0, 50.0, 0.0}
 				boid2 = NewBoid(2)

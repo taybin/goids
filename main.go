@@ -2,11 +2,15 @@ package main
 
 import (
 	"gopkg.in/alecthomas/kingpin.v2"
+	"log"
 	"time"
 )
 
 var (
 	count = kingpin.Flag("count", "Number of boids").Short('c').Default("500").Uint()
+	xD    = Dimension(kingpin.Arg("x-dimension", "Start and stop of x dimension").Default("0:100"))
+	yD    = Dimension(kingpin.Arg("y-dimension", "Start and stop of y dimension").Default("0:100"))
+	zD    = Dimension(kingpin.Arg("z-dimension", "Start and stop of z dimension").Default("0:100"))
 )
 
 type appContext struct {
@@ -17,8 +21,12 @@ func main() {
 	kingpin.Version("0.7").Author("Taybin Rutkin")
 	kingpin.CommandLine.Help = "An implementation of boids"
 	kingpin.Parse()
+	log.Printf("x-dimension %d - %d\n", xD.Start, xD.Stop)
+	log.Printf("y-dimension %d - %d\n", yD.Start, yD.Stop)
+	log.Printf("z-dimension %d - %d\n", zD.Start, zD.Stop)
+
 	context := &appContext{
-		area: NewArea(300, 300, 300),
+		area: NewArea(xD, yD, zD),
 	}
 
 	setupBoids(context)

@@ -5,18 +5,22 @@ import (
 )
 
 type Area struct {
-	Tree       *rtree.Rtree
-	Dimensions rtree.Point
-	Boids      map[int]*Boid
-	SendChan   chan *Boid
+	Tree     *rtree.Rtree
+	X        *DimensionValue
+	Y        *DimensionValue
+	Z        *DimensionValue
+	Boids    map[int]*Boid
+	SendChan chan *Boid
 }
 
-func NewArea(dimensions ...float64) *Area {
+func NewArea(xD, yD, zD *DimensionValue) *Area {
 	a := &Area{
-		Tree:       rtree.NewTree(25, 50),
-		Dimensions: rtree.Point{300.0, 300.0, 300.0},
-		Boids:      make(map[int]*Boid),
-		SendChan:   make(chan *Boid),
+		Tree:     rtree.NewTree(25, 50),
+		X:        xD,
+		Y:        yD,
+		Z:        zD,
+		Boids:    make(map[int]*Boid),
+		SendChan: make(chan *Boid),
 	}
 	return a
 }

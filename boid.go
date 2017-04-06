@@ -23,9 +23,9 @@ func NewBoid(id int) *Boid {
 }
 
 func (b *Boid) RandomizePosition(area *Area) {
-	for i := 0; i < 3; i++ {
-		b.Point[i] = rand.Float64() * area.Dimensions[i]
-	}
+	b.Point[0] = rand.Float64() * area.X.Stop
+	b.Point[1] = rand.Float64() * area.Y.Stop
+	b.Point[2] = rand.Float64() * area.Z.Stop
 }
 
 func (b *Boid) Bounds() *rtree.Rect {
