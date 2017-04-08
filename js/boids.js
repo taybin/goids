@@ -78,7 +78,7 @@ window.addEventListener("DOMContentLoaded", function(evt) {
         boids[boid.id].cone,
         'position',
         30,
-        120,
+        30,
         boids[boid.id].cone.position,
         new BABYLON.Vector3(
           boid.position[0],
