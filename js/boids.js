@@ -65,14 +65,19 @@ window.addEventListener("DOMContentLoaded", function(evt) {
         tessellation: 4,
         height: 4
       }, scene);
-      boid.cone = cone;
-      boids[boid.id] = boid;
-      boids[boid.id].cone.position =
+      cone.position =
         new BABYLON.Vector3(
           boid.position[0],
           boid.position[1],
           boid.position[2]);
+      boid.cone = cone;
+      boids[boid.id] = boid;
     } else {
+      var newPosition = new BABYLON.Vector3(
+        boid.position[0],
+        boid.position[1],
+        boid.position[2]
+      );
       BABYLON.Animation.CreateAndStartAnimation(
         'animation-'+boid.id+'-position',
         boids[boid.id].cone,
@@ -80,12 +85,13 @@ window.addEventListener("DOMContentLoaded", function(evt) {
         30,
         30,
         boids[boid.id].cone.position,
-        new BABYLON.Vector3(
-          boid.position[0],
-          boid.position[1],
-          boid.position[2]),
+        newPosition,
         0,
         null
+      );
+      boids[boid.id].cone.lookAt(newPosition,
+        0,
+        (Math.PI / 2) * 3
       );
     }
   };
