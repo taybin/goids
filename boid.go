@@ -38,6 +38,7 @@ func (b *Boid) UpdateVelocity(area *Area) {
 
 	velocities := AddPoints(b.Velocity, v1, v2, v3)
 	b.Velocity = LimitVelocity(velocities)
+	b.BoundPosition(area)
 }
 
 func (b *Boid) UpdatePosition() {
@@ -158,6 +159,50 @@ func (b *Boid) Rule3(area *Area) rtree.Point {
 	subbed := SubPoints(pvJ, b.Velocity)
 	divved := DivPoint(subbed, 8.0)
 	return divved
+}
+
+// BoundPosition
+// PROCEDURE bound_position(Boid b)
+// 	Integer Xmin, Xmax, Ymin, Ymax, Zmin, Zmax
+// 	Vector v
+//
+// 	IF b.position.x < Xmin THEN
+// 		v.x = 10
+// 	ELSE IF b.position.x > Xmax THEN
+// 		v.x = -10
+// 	END IF
+// 	IF b.position.y < Ymin THEN
+// 		v.y = 10
+// 	ELSE IF b.position.y > Ymax THEN
+// 		v.y = -10
+// 	END IF
+// 	IF b.position.z < Zmin THEN
+// 		v.z = 10
+// 	ELSE IF b.position.z > Zmax THEN
+// 		v.z = -10
+// 	END IF
+//
+// 	RETURN v
+// END PROCEDURE
+func (b *Boid) BoundPosition(area *Area) {
+	if b.Point[0]+b.Velocity[0] > area.X.Stop {
+		b.Velocity[0] -= area.X.Length() / 100
+	}
+	if b.Point[0]+b.Velocity[0] < area.X.Start {
+		b.Velocity[0] += area.X.Length() / 100
+	}
+	if b.Point[1]+b.Velocity[1] > area.Y.Stop {
+		b.Velocity[1] -= area.Y.Length() / 100
+	}
+	if b.Point[1]+b.Velocity[1] < area.Y.Start {
+		b.Velocity[1] += area.Y.Length() / 100
+	}
+	if b.Point[2]+b.Velocity[2] > area.Z.Stop {
+		b.Velocity[2] -= area.Z.Length() / 100
+	}
+	if b.Point[2]+b.Velocity[2] < area.Z.Start {
+		b.Velocity[2] += area.Z.Length() / 100
+	}
 }
 
 // LimitVelocity
