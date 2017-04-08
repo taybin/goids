@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
@@ -37,12 +37,12 @@ func websockHandler(context *appContext, w http.ResponseWriter, r *http.Request)
 	for {
 		select {
 		case boid := <-context.area.SendChan:
-			jBoid, err := json.Marshal(boid)
+			pBoid, err := proto.Marshal(boid.ToBoidPosition())
 			if err != nil {
 				log.Println("error encoding boid:", err)
 				return
 			}
-			err = c.WriteMessage(websocket.TextMessage, jBoid)
+			err = c.WriteMessage(websocket.BinaryMessage, pBoid)
 			if err != nil {
 				log.Println("write:", err)
 				return

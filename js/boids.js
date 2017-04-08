@@ -1,4 +1,7 @@
 import BABYLON from 'babylonjs';
+import boidProto from '../boid.proto';
+
+var BoidMessage = boidProto.main.BoidPosition;
 
 window.addEventListener("DOMContentLoaded", function(evt) {
   var boids = {}
@@ -38,6 +41,7 @@ window.addEventListener("DOMContentLoaded", function(evt) {
 
   var ws;
   ws = new WebSocket("ws://localhost:3000/ws");
+  ws.binaryType = 'arraybuffer';
   ws.onopen = function(evt) {
     console.log("OPEN");
   }
@@ -52,7 +56,7 @@ window.addEventListener("DOMContentLoaded", function(evt) {
   }
 
   ws.onmessage = function(evt) {
-    var boid = JSON.parse(evt.data);
+    var boid = BoidMessage.decode(new Uint8Array(evt.data));
 
     if (!(boid.id in boids)) {
       var cone = BABYLON.MeshBuilder.CreateCylinder(boid.id.toString(), {

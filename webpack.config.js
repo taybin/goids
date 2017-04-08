@@ -5,6 +5,14 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'static')
+  },
+  module: {
+    loaders: [
+      {
+        test: /\.proto$/,
+        loader: "protobuf-loader"
+      }
+    ]
   }
 };
 

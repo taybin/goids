@@ -194,3 +194,10 @@ func SpatialsToBoids(spatials []rtree.Spatial) []*Boid {
 	}
 	return boids
 }
+
+func (b *Boid) ToBoidPosition() *BoidPosition {
+	return &BoidPosition{
+		Id:       int32(b.ID),
+		Position: []float64{b.Point[0], b.Point[1], b.Point[2]},
+	}
+}
