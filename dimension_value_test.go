@@ -27,12 +27,12 @@ var _ = Describe("DimensionValue", func() {
 
 	It("Should return a bounded, random value", func() {
 		dvs := []*DimensionValue{
-			&DimensionValue{0, 1},
-			&DimensionValue{-50, 50},
-			&DimensionValue{100, 200},
-			&DimensionValue{0, 0},
-			&DimensionValue{0.0, 0.0},
-			&DimensionValue{1.0, 1.0},
+			{0, 1},
+			{-50, 50},
+			{100, 200},
+			{0, 0},
+			{0.0, 0.0},
+			{1.0, 1.0},
 		}
 		for _, dv := range dvs {
 			r := dv.Rand()
