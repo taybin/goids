@@ -64,7 +64,7 @@ func (b *Boid) UpdatePosition() {
 func (b *Boid) Rule1(area *Area) rtree.Point {
 	pcJ := rtree.Point{0.0, 0.0, 0.0}
 
-	nearest := area.Tree.NearestNeighbors(5, b.Point)
+	nearest := area.Tree.NearestNeighbors(10, b.Point)
 	boids := SpatialsToBoids(nearest)
 
 	for _, boid := range boids {
@@ -104,7 +104,7 @@ func (b *Boid) Rule1(area *Area) rtree.Point {
 func (b *Boid) Rule2(area *Area) rtree.Point {
 	vector := rtree.Point{0.0, 0.0, 0.0}
 
-	nearest := area.Tree.NearestNeighbors(5, b.Point)
+	nearest := area.Tree.NearestNeighbors(10, b.Point)
 	boids := SpatialsToBoids(nearest)
 
 	for _, boid := range boids {
@@ -140,7 +140,7 @@ func (b *Boid) Rule2(area *Area) rtree.Point {
 func (b *Boid) Rule3(area *Area) rtree.Point {
 	pvJ := rtree.Point{0.0, 0.0, 0.0}
 
-	nearest := area.Tree.NearestNeighbors(5, b.Point)
+	nearest := area.Tree.NearestNeighbors(10, b.Point)
 	boids := SpatialsToBoids(nearest)
 
 	for _, boid := range boids {
