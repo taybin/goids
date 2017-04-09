@@ -216,13 +216,12 @@ func (b *Boid) BoundPosition(area *Area) {
 //          END IF
 //  END PROCEDURE
 func LimitVelocity(velocities rtree.Point) rtree.Point {
-	vlim := 25.0
 	var absVel float64
 
 	for i := 0; i < 3; i++ {
 		absVel = math.Abs(velocities[i])
-		if absVel > vlim {
-			velocities[i] = (velocities[i] / absVel) * vlim
+		if absVel > *maxVelocity {
+			velocities[i] = (velocities[i] / absVel) * *maxVelocity
 		}
 	}
 

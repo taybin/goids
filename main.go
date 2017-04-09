@@ -7,10 +7,11 @@ import (
 )
 
 var (
-	count = kingpin.Flag("count", "Number of boids").Short('c').Default("500").Uint()
-	xD    = Dimension(kingpin.Arg("x-dimension", "Start and stop of x dimension").Default("0:100"))
-	yD    = Dimension(kingpin.Arg("y-dimension", "Start and stop of y dimension").Default("0:100"))
-	zD    = Dimension(kingpin.Arg("z-dimension", "Start and stop of z dimension").Default("0:100"))
+	count       = kingpin.Flag("count", "Number of boids").Short('c').Default("500").Uint()
+	maxVelocity = kingpin.Flag("max-velocity", "Number of boids").Short('v').Default("25").Float64()
+	xD          = Dimension(kingpin.Arg("x-dimension", "Start and stop of x dimension").Default("0:100"))
+	yD          = Dimension(kingpin.Arg("y-dimension", "Start and stop of y dimension").Default("0:100"))
+	zD          = Dimension(kingpin.Arg("z-dimension", "Start and stop of z dimension").Default("0:100"))
 )
 
 type appContext struct {
@@ -24,6 +25,8 @@ func main() {
 	log.Printf("x-dimension %f - %f\n", xD.Start, xD.Stop)
 	log.Printf("y-dimension %f - %f\n", yD.Start, yD.Stop)
 	log.Printf("z-dimension %f - %f\n", zD.Start, zD.Stop)
+	log.Printf("Boids: %d\n", *count)
+	log.Printf("Maximum Velocity: %f\n", *maxVelocity)
 
 	context := &appContext{
 		area: NewArea(xD, yD, zD),
