@@ -23,7 +23,7 @@ window.addEventListener("DOMContentLoaded", function(evt) {
     camera.attachControl(canvas, false);
 
     // create a basic light, aiming 0,1,0 - meaning, to the sky
-    var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0,1,0), scene);
+    var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0,5,-500), scene);
 
     // return the created scene
     return scene;
