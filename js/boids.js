@@ -1,20 +1,22 @@
+'use strict';
+
 import BABYLON from 'babylonjs';
 import boidProto from '../boid.proto';
 
-var BoidMessage = boidProto.main.BoidPosition;
+const BoidMessage = boidProto.main.BoidPosition;
 
-window.addEventListener("DOMContentLoaded", function(evt) {
-  var boids = {}
+window.addEventListener("DOMContentLoaded", evt => {
+  const boids = {}
 
-  var canvas = document.getElementById('renderCanvas');
-  var engine = new BABYLON.Engine(canvas, true);
+  const canvas = document.getElementById('renderCanvas');
+  const engine = new BABYLON.Engine(canvas, true);
 
-  var createScene = function() {
+  const createScene = () => {
     // create a basic BJS Scene object
-    var scene = new BABYLON.Scene(engine);
+    const scene = new BABYLON.Scene(engine);
 
     // create a FreeCamera, and set its position to (x:0, y:5, z:-10)
-    var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5, -500), scene);
+    const camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5, -500), scene);
 
     // target the camera to scene origin
     camera.setTarget(BABYLON.Vector3.Zero());
@@ -23,43 +25,42 @@ window.addEventListener("DOMContentLoaded", function(evt) {
     camera.attachControl(canvas, false);
 
     // create a basic light, aiming 0,1,0 - meaning, to the sky
-    var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0,5,-500), scene);
+    const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0,5,-500), scene);
 
     // return the created scene
     return scene;
   };
 
-  var scene = createScene();
+  const scene = createScene();
 
-  engine.runRenderLoop(function() {
+  engine.runRenderLoop( () => {
     scene.render();
   });
 
-  window.addEventListener('resize', function() {
+  window.addEventListener('resize', () => {
     engine.resize();
   });
 
-  var ws;
-  ws = new WebSocket("ws://localhost:3000/ws");
+  const ws = new WebSocket("ws://localhost:3000/ws");
   ws.binaryType = 'arraybuffer';
-  ws.onopen = function(evt) {
+  ws.onopen = evt => {
     console.log("OPEN");
   }
 
-  ws.onclose = function(evt) {
+  ws.onclose = evt => {
     console.log("CLOSE");
     ws = null;
   }
 
-  ws.onerror = function(evt) {
+  ws.onerror = evt => {
     console.log("ERROR: " + evt.data);
   }
 
-  ws.onmessage = function(evt) {
-    var boid = BoidMessage.decode(new Uint8Array(evt.data));
+  ws.onmessage = evt => {
+    const boid = BoidMessage.decode(new Uint8Array(evt.data));
 
     if (!(boid.id in boids)) {
-      var cone = BABYLON.MeshBuilder.CreateCylinder(boid.id.toString(), {
+      const cone = BABYLON.MeshBuilder.CreateCylinder(boid.id.toString(), {
         diameterTop: 0,
         diameterBottom: 3,
         tessellation: 4,
@@ -73,7 +74,7 @@ window.addEventListener("DOMContentLoaded", function(evt) {
       boid.cone = cone;
       boids[boid.id] = boid;
     } else {
-      var newPosition = new BABYLON.Vector3(
+      const newPosition = new BABYLON.Vector3(
         boid.position[0],
         boid.position[1],
         boid.position[2]
