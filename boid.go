@@ -111,7 +111,7 @@ func (b *Boid) Rule2(area *Area) rtree.Point {
 	for _, boid := range boids {
 		if boid.ID != b.ID {
 			for i := 0; i < 3; i++ {
-				if math.Abs(boid.Point[i]-b.Point[i]) < 10 {
+				if math.Abs(boid.Point[i]-b.Point[i]) < 5 {
 					vector[i] = vector[i] - (boid.Point[i] - b.Point[i])
 				}
 			}
