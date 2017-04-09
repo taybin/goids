@@ -83,7 +83,7 @@ window.addEventListener("DOMContentLoaded", function(evt) {
         boids[boid.id].cone,
         'position',
         30,
-        30,
+        15,
         boids[boid.id].cone.position,
         newPosition,
         0,
