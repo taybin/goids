@@ -17,8 +17,11 @@ go build
 
 Run
 ---
+This creates a 200x200 space with no Z dimension.  I've found a max-velocity
+of 5 seems to work well.  The computation should be O(n log n) with n being
+number of boids.  Feel free to play with other counts, velocities, and dimensions.
 ```
-./goids
+./goids --count=100 --max-velocity=5 -- -100:100 -100:100 0:0
 ```
 
 Then open `http://localhost:3000`
