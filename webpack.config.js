@@ -6,11 +6,17 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'static')
   },
+	devtool: 'source-map',
   module: {
-    loaders: [
+    rules: [
+      {
+        test: /\.js$/,
+        use: ["source-map-loader"],
+        enforce: "pre"
+      },
       {
         test: /\.proto$/,
-        loader: "protobuf-loader"
+        use: ["protobuf-loader"]
       }
     ]
   }
