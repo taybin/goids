@@ -13,7 +13,7 @@
     "escodegen": "^1.8.1",
     "espree": "^3.4.1",
     "protobuf-loader": "^0.0.8",
-    "protobufjs": "^6.7.3",
+    "protobufjs": "^6.8.6",
     "source-map-loader": "^0.2.1"
   },
   "devDependencies": {
